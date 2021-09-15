@@ -20,6 +20,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
@@ -306,39 +308,39 @@ public class ImagePreviewAdapter extends PagerAdapter {
             if (isStandardImage) {
                 loadImageStandard(imagePath, imageView, imageGif, progressBar);
             } else {
-                loadImageSpec(url, imagePath, imageView, imageGif, progressBar);
+                loadImageSpec(info, imagePath, imageView, imageGif, progressBar);
             }
         } else {
-            Glide.with(activity).downloadOnly().load(url).addListener(new RequestListener<File>() {
+            Glide.with(activity).downloadOnly().load(info.getGlideUrl()).addListener(new RequestListener<File>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<File> target,
                                             boolean isFirstResource) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String fileFullName = String.valueOf(System.currentTimeMillis());
-                            String saveDir = FileUtil.getAvailableCacheDir(activity).getAbsolutePath() + File.separator + "image/";
-                            File downloadFile = HttpUtil.downloadFile(url, fileFullName, saveDir);
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (downloadFile != null && downloadFile.exists() && downloadFile.length() > 0) {
-                                        // 通过urlConn下载完成
-                                        loadSuccess(originPathUrl, downloadFile, imageView, imageGif, progressBar);
-                                    } else {
-                                        loadFailed(imageView, imageGif, progressBar, e);
-                                    }
-                                }
-                            });
-                        }
-                    }).start();
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            String fileFullName = String.valueOf(System.currentTimeMillis());
+//                            String saveDir = FileUtil.getAvailableCacheDir(activity).getAbsolutePath() + File.separator + "image/";
+//                            File downloadFile = HttpUtil.downloadFile(url, fileFullName, saveDir);
+//                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    if (downloadFile != null && downloadFile.exists() && downloadFile.length() > 0) {
+//                                        // 通过urlConn下载完成
+//                                        loadSuccess(originPathUrl, downloadFile, imageView, imageGif, progressBar);
+//                                    } else {
+//                                        loadFailed(imageView, imageGif, progressBar, e);
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    }).start();
                     return true;
                 }
 
                 @Override
                 public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource,
                                                boolean isFirstResource) {
-                    loadSuccess(url, resource, imageView, imageGif, progressBar);
+                    loadSuccess(info, resource, imageView, imageGif, progressBar);
                     return true;
                 }
             }).into(new FileTarget() {
@@ -388,14 +390,14 @@ public class ImagePreviewAdapter extends PagerAdapter {
         }
     }
 
-    private void loadSuccess(String imageUrl, File resource, SubsamplingScaleImageViewDragClose imageView, ImageView imageGif,
+    private void loadSuccess(ImageInfo imageInfo, File resource, SubsamplingScaleImageViewDragClose imageView, ImageView imageGif,
                              ProgressBar progressBar) {
         String imagePath = resource.getAbsolutePath();
-        boolean isStandardImage = ImageUtil.isStandardImage(imageUrl, imagePath);
+        boolean isStandardImage = ImageUtil.isStandardImage(imageInfo.getOriginUrl(), imagePath);
         if (isStandardImage) {
             loadImageStandard(imagePath, imageView, imageGif, progressBar);
         } else {
-            loadImageSpec(imageUrl, imagePath, imageView, imageGif, progressBar);
+            loadImageSpec(imageInfo, imagePath, imageView, imageGif, progressBar);
         }
     }
 
@@ -451,13 +453,13 @@ public class ImagePreviewAdapter extends PagerAdapter {
         });
     }
 
-    private void loadImageSpec(final String imageUrl, final String imagePath, final SubsamplingScaleImageViewDragClose imageView,
+    private void loadImageSpec(final ImageInfo imageInfo, final String imagePath, final SubsamplingScaleImageViewDragClose imageView,
                                final ImageView imageSpec, final ProgressBar progressBar) {
 
         imageSpec.setVisibility(View.VISIBLE);
         imageView.setVisibility(View.GONE);
 
-        boolean isGifFile = ImageUtil.isGifImageWithMime(imageUrl, imagePath);
+        boolean isGifFile = ImageUtil.isGifImageWithMime(imageInfo.getOriginUrl(), imagePath);
         if (isGifFile) {
             Glide.with(activity)
                     .asGif()
@@ -484,7 +486,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
                     .into(imageSpec);
         } else {
             Glide.with(activity)
-                    .load(imageUrl)
+                    .load(imageInfo.getGlideUrl())
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE).error(ImagePreview.getInstance().getErrorPlaceHolder()))
                     .listener(new RequestListener<Drawable>() {
                         @Override

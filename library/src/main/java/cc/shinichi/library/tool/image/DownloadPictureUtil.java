@@ -23,6 +23,7 @@ import java.io.OutputStream;
 
 import cc.shinichi.library.ImagePreview;
 import cc.shinichi.library.R;
+import cc.shinichi.library.bean.ImageInfo;
 import cc.shinichi.library.glide.FileTarget;
 import cc.shinichi.library.tool.file.FileUtil;
 import cc.shinichi.library.tool.file.SingleMediaScanner;
@@ -36,8 +37,8 @@ import cc.shinichi.library.tool.ui.ToastUtil;
  */
 public class DownloadPictureUtil {
 
-    public static void downloadPicture(final Context context, final String url) {
-        Glide.with(context).downloadOnly().load(url).into(new FileTarget() {
+    public static void downloadPicture(final Context context, final ImageInfo imageInfo) {
+        Glide.with(context).downloadOnly().load(imageInfo.getGlideUrl()).into(new FileTarget() {
             @Override
             public void onLoadStarted(@Nullable Drawable placeholder) {
                 super.onLoadStarted(placeholder);

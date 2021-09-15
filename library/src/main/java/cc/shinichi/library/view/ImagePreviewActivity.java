@@ -305,7 +305,7 @@ public class ImagePreviewActivity extends AppCompatActivity implements Handler.C
      * 下载当前图片到SD卡
      */
     private void downloadCurrentImg() {
-        DownloadPictureUtil.downloadPicture(context.getApplicationContext(), currentItemOriginPathUrl);
+        DownloadPictureUtil.downloadPicture(context.getApplicationContext(), imageInfoList.get(currentItem));
     }
 
     @Override

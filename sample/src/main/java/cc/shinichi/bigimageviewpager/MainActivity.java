@@ -33,9 +33,13 @@ import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
 import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cc.shinichi.library.ImagePreview;
 import cc.shinichi.library.bean.ImageInfo;
@@ -89,6 +93,18 @@ public class MainActivity extends AppCompatActivity {
             "http://img6.16fan.com/attachments/wenzhang/201805/18/152660818716180ge.jpeg"
     };
 
+    private String[] imageList = {
+            "https://test-image-private.cloud.hecom.cn/crm/v2011/2021/9/1122225706/09172922/512logo.png",
+            "https://test-image-private.cloud.hecom.cn/crm/v2011/2021/9/1122225706/09172922/%E4%B8%96%E7%95%8C%E5%9C%B0%E5%9B%BE.jpg"
+    };
+    private String[] headKeys = {
+            "Authorization", "Date", "Referer", "x-oss-security-token"
+    };
+    private String[][] headers = {
+            {"OSS STS.NTiXPJHFhSemHYTgmRkqruwWj:qFYfJxtU+8yq/YhMFmonxx0WThE=", "Tue, 14 Sep 2021 06:38:19 GMT", "https://dev.cloud.hecom.cn/", "CAIS4AN1q6Ft5B2yfSjIr5fcE+r+pZlJ5KeGSn/lg20HZ/5emrL8iDz2IHtLeHNhAekbtfUwnGBZ6PYZlr1tEcccHAnJaNM1t80Nq1n7PtWZ5ZRuJCH1Xtr3d1KIAjvXgeUWCYeQFaETEJXAQlTAkTAJkdmeXD6+XlujHISUgJp8FLo+VRW5ajw0TLUzIRB5+uAXKVzbN/umLnyNhXHLXm5poRZbg2Fy4rikuEf1iHzkgUb91/UeqqnoP5GgdLMMBppkVMqv1+EE28OjkCdb8EpN77wkzv4GqyvKpc3YCF1W/hnDPevQ/8YoJxV8IbZgQ/cd67qe2fRzob7UjJ+liUQPb/1YSDiaT4Sn3ceBFuKtO81+a+yjYi2KkLL7P5Lu4QQ/eiBZZkEYZ9c6Njp7DRsxRnTUK6uq4zKLawy4Ga+ey/N0g9gn01jz4Z+EJlyCBq2D0DgRJpJ7ZFktcABMhTW4Ne1kMQVHaAFgHK3HD9cxPgxTsr+tvAjbWSAl1mtWofTiarTdoKVYd9+nB8sBk6hlPcgb6jp2EgqrF+710BZPJVYIG+gGjPPfXrak86KAzempZurLN+sKoF0yc0qK9HXREyIIdHCqt4J7OQvGq5/LrqfI9I5sVRcj/cxPztUXmymUDTYagAESmFdekLroQo/SMX6KoCQkxyIJyNk66h4BDhyS90B+rCsTeKO36o62C4qEhWb8pNFQbGXc9xXc/VIY4werU75bK4Jqagj9CUrmog0iq+yhvk6BxG+Hta1hWz7A+WyUwxQUzPDoVbtwmy8tL7AiUIf6SpHjhLg5Ee3BDz4HlUAJIw=="},
+            {"OSS STS.NTiXPJHFhSemHYTgmRkqruwWj:SqdjmapBNgoFcWbnt3fGBp7/nCQ=", "Tue, 14 Sep 2021 06:50:17 GMT", "https://dev.cloud.hecom.cn/", "CAIS4AN1q6Ft5B2yfSjIr5fcE+r+pZlJ5KeGSn/lg20HZ/5emrL8iDz2IHtLeHNhAekbtfUwnGBZ6PYZlr1tEcccHAnJaNM1t80Nq1n7PtWZ5ZRuJCH1Xtr3d1KIAjvXgeUWCYeQFaETEJXAQlTAkTAJkdmeXD6+XlujHISUgJp8FLo+VRW5ajw0TLUzIRB5+uAXKVzbN/umLnyNhXHLXm5poRZbg2Fy4rikuEf1iHzkgUb91/UeqqnoP5GgdLMMBppkVMqv1+EE28OjkCdb8EpN77wkzv4GqyvKpc3YCF1W/hnDPevQ/8YoJxV8IbZgQ/cd67qe2fRzob7UjJ+liUQPb/1YSDiaT4Sn3ceBFuKtO81+a+yjYi2KkLL7P5Lu4QQ/eiBZZkEYZ9c6Njp7DRsxRnTUK6uq4zKLawy4Ga+ey/N0g9gn01jz4Z+EJlyCBq2D0DgRJpJ7ZFktcABMhTW4Ne1kMQVHaAFgHK3HD9cxPgxTsr+tvAjbWSAl1mtWofTiarTdoKVYd9+nB8sBk6hlPcgb6jp2EgqrF+710BZPJVYIG+gGjPPfXrak86KAzempZurLN+sKoF0yc0qK9HXREyIIdHCqt4J7OQvGq5/LrqfI9I5sVRcj/cxPztUXmymUDTYagAESmFdekLroQo/SMX6KoCQkxyIJyNk66h4BDhyS90B+rCsTeKO36o62C4qEhWb8pNFQbGXc9xXc/VIY4werU75bK4Jqagj9CUrmog0iq+yhvk6BxG+Hta1hWz7A+WyUwxQUzPDoVbtwmy8tL7AiUIf6SpHjhLg5Ee3BDz4HlUAJIw=="}
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +114,8 @@ public class MainActivity extends AppCompatActivity {
             setExitSharedElementCallback(new MaterialContainerTransformSharedElementCallback());
             getWindow().setSharedElementsUseOverlay(false);
         }
-
+        String s = java.net.URLEncoder.encode("世界地图");
+        System.out.println("s = " + s);
         setContentView(R.layout.activity_main);
 
         SwitchCompat switchClickClose = findViewById(R.id.switchClickClose);
@@ -201,19 +218,34 @@ public class MainActivity extends AppCompatActivity {
         ImageInfo imageInfo;
         final List<ImageInfo> imageInfoList = new ArrayList<>();
 
-        for (String image : images) {
+        for (int i = 0; i < imageList.length; ++i) {
+            String image = null;
+            image = Uri.encode(imageList[i], "-![.:/,%?&=]");
+            System.out.println("imnage = " + image);
             imageInfo = new ImageInfo();
-            // 原图地址
             imageInfo.setOriginUrl(image);
-            if (image.contains("16fan.com")) {
-                // 缩略图；实际使用中，根据需求传入缩略图路径。如果没有缩略图url，可以将两项设置为一样。
-                imageInfo.setThumbnailUrl(image.concat("-400"));
-            } else {
-                // 缩略图；实际使用中，根据需求传入缩略图路径。如果没有缩略图url，可以将两项设置为一样。
-                imageInfo.setThumbnailUrl(image);
+            imageInfo.setThumbnailUrl(image);
+            Map<String, String> map = new HashMap<>();
+            for (int j = 0; j < headKeys.length; ++j) {
+                map.put(headKeys[j], headers[i][j]);
             }
+            imageInfo.setHeaders(map);
             imageInfoList.add(imageInfo);
         }
+
+//        for (String image : images) {
+//            imageInfo = new ImageInfo();
+//            // 原图地址
+//            imageInfo.setOriginUrl(image);
+//            if (image.contains("16fan.com")) {
+//                // 缩略图；实际使用中，根据需求传入缩略图路径。如果没有缩略图url，可以将两项设置为一样。
+//                imageInfo.setThumbnailUrl(image.concat("-400"));
+//            } else {
+//                // 缩略图；实际使用中，根据需求传入缩略图路径。如果没有缩略图url，可以将两项设置为一样。
+//                imageInfo.setThumbnailUrl(image);
+//            }
+//            imageInfoList.add(imageInfo);
+//        }
 
         // 最简单的调用：
         findViewById(R.id.buttonEasyUse).setOnClickListener(new View.OnClickListener() {
@@ -303,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
                         .setImageInfoList(imageInfoList)
 
                         // 2：直接传url List
-                        //.setImageList(List<String> imageList)
+//                        .setImageList(Arrays.asList(imageList))
 
                         // 3：只有一张图片的情况，可以直接传入这张图片的url
                         //.setImage(String image)
