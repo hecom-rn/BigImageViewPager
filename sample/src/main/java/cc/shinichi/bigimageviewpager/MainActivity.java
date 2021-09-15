@@ -218,34 +218,34 @@ public class MainActivity extends AppCompatActivity {
         ImageInfo imageInfo;
         final List<ImageInfo> imageInfoList = new ArrayList<>();
 
-        for (int i = 0; i < imageList.length; ++i) {
-            String image = null;
-            image = Uri.encode(imageList[i], "-![.:/,%?&=]");
-            System.out.println("imnage = " + image);
-            imageInfo = new ImageInfo();
-            imageInfo.setOriginUrl(image);
-            imageInfo.setThumbnailUrl(image);
-            Map<String, String> map = new HashMap<>();
-            for (int j = 0; j < headKeys.length; ++j) {
-                map.put(headKeys[j], headers[i][j]);
-            }
-            imageInfo.setHeaders(map);
-            imageInfoList.add(imageInfo);
-        }
-
-//        for (String image : images) {
+//        for (int i = 0; i < imageList.length; ++i) {
+//            String image = null;
+//            image = Uri.encode(imageList[i], "-![.:/,%?&=]");
+//            System.out.println("imnage = " + image);
 //            imageInfo = new ImageInfo();
-//            // 原图地址
 //            imageInfo.setOriginUrl(image);
-//            if (image.contains("16fan.com")) {
-//                // 缩略图；实际使用中，根据需求传入缩略图路径。如果没有缩略图url，可以将两项设置为一样。
-//                imageInfo.setThumbnailUrl(image.concat("-400"));
-//            } else {
-//                // 缩略图；实际使用中，根据需求传入缩略图路径。如果没有缩略图url，可以将两项设置为一样。
-//                imageInfo.setThumbnailUrl(image);
+//            imageInfo.setThumbnailUrl(image);
+//            Map<String, String> map = new HashMap<>();
+//            for (int j = 0; j < headKeys.length; ++j) {
+//                map.put(headKeys[j], headers[i][j]);
 //            }
+//            imageInfo.setHeaders(map);
 //            imageInfoList.add(imageInfo);
 //        }
+
+        for (String image : images) {
+            imageInfo = new ImageInfo();
+            // 原图地址
+            imageInfo.setOriginUrl(image);
+            if (image.contains("16fan.com")) {
+                // 缩略图；实际使用中，根据需求传入缩略图路径。如果没有缩略图url，可以将两项设置为一样。
+                imageInfo.setThumbnailUrl(image.concat("-400"));
+            } else {
+                // 缩略图；实际使用中，根据需求传入缩略图路径。如果没有缩略图url，可以将两项设置为一样。
+                imageInfo.setThumbnailUrl(image);
+            }
+            imageInfoList.add(imageInfo);
+        }
 
         // 最简单的调用：
         findViewById(R.id.buttonEasyUse).setOnClickListener(new View.OnClickListener() {

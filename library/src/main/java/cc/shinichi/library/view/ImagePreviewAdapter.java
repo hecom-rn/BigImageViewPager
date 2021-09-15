@@ -315,25 +315,25 @@ public class ImagePreviewAdapter extends PagerAdapter {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<File> target,
                                             boolean isFirstResource) {
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            String fileFullName = String.valueOf(System.currentTimeMillis());
-//                            String saveDir = FileUtil.getAvailableCacheDir(activity).getAbsolutePath() + File.separator + "image/";
-//                            File downloadFile = HttpUtil.downloadFile(url, fileFullName, saveDir);
-//                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    if (downloadFile != null && downloadFile.exists() && downloadFile.length() > 0) {
-//                                        // 通过urlConn下载完成
-//                                        loadSuccess(originPathUrl, downloadFile, imageView, imageGif, progressBar);
-//                                    } else {
-//                                        loadFailed(imageView, imageGif, progressBar, e);
-//                                    }
-//                                }
-//                            });
-//                        }
-//                    }).start();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String fileFullName = String.valueOf(System.currentTimeMillis());
+                            String saveDir = FileUtil.getAvailableCacheDir(activity).getAbsolutePath() + File.separator + "image/";
+                            File downloadFile = HttpUtil.downloadFile(url, fileFullName, saveDir);
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (downloadFile != null && downloadFile.exists() && downloadFile.length() > 0) {
+                                        // 通过urlConn下载完成
+                                        loadSuccess(info, downloadFile, imageView, imageGif, progressBar);
+                                    } else {
+                                        loadFailed(imageView, imageGif, progressBar, e);
+                                    }
+                                }
+                            });
+                        }
+                    }).start();
                     return true;
                 }
 
