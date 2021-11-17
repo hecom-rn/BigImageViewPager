@@ -67,30 +67,32 @@ public class MainActivity extends AppCompatActivity {
 
     private String[] images = {
             // 不限于以下六种格式的图片
-            "https://aloss.11oi.com/app/img/temp/launch_top.bmp",
-            "https://aloss.11oi.com/app/img/temp/launch_top.gif",
-            "https://aloss.11oi.com/app/img/temp/launch_top.jpeg",
-            "https://aloss.11oi.com/app/img/temp/launch_top.jpg",
-            "https://aloss.11oi.com/app/img/temp/launch_top.png",
-            "https://aloss.11oi.com/app/img/temp/launch_top.webp",
+//            "https://aloss.11oi.com/app/img/temp/launch_top.bmp",
+//            "https://aloss.11oi.com/app/img/temp/launch_top.gif",
+//            "https://aloss.11oi.com/app/img/temp/launch_top.jpeg",
+//            "https://aloss.11oi.com/app/img/temp/launch_top.jpg",
+//            "https://aloss.11oi.com/app/img/temp/launch_top.png",
+//            "https://aloss.11oi.com/app/img/temp/launch_top.webp",
+//            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fsearchfoto.ru%2Fimg%2FxyygpKbDS1y8pTjXUy83VS8rMS9fLSy3RL8mwz0yx9fcM0ItIKvZNTq9I9HB2cgr1qkx19yixzCp3BAK1xNwC63JbI2MDMCvD1tAcwioqtjUEMwqSc2xTwADMzbc1hQgDjTbUMwQA.jpg&refer=http%3A%2F%2Fsearchfoto.ru&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1634435483&t=39460dc101f8a82f2e9b6d5355b1496a",
+            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fclubimg.club.vmall.com%2Fdata%2Fattachment%2Fforum%2F202003%2F30%2F004247vai7czfeqeytdrks.jpg&refer=http%3A%2F%2Fclubimg.club.vmall.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1634435483&t=9203fd17a30c6d24ac82b36bfe934f42",
             // 小尺寸图片
-            "https://s1.ax1x.com/2020/10/16/0HXKv4.jpg",
-            // 普通jpg图片
-            "http://img6.16fan.com/201510/11/005258wdngg6rv0tpn8z9z.jpg",
-            "http://img6.16fan.com/201510/11/013553aj3kp9u6iuz6k9uj.jpg",
-            "http://img6.16fan.com/201510/11/011753fnanichdca0wbhxc.jpg",
-            "http://img6.16fan.com/201510/11/011819zbzbciir9ctn295o.jpg",
-            "http://img6.16fan.com/201510/11/004847l7w568jc5n5wn385.jpg",
-            "http://img6.16fan.com/201510/11/004906z0a0a0e0hs56ce0t.jpg",
-            "http://img6.16fan.com/201510/11/004937pwttwjt0bgtoton7.jpg",
-            "http://img6.16fan.com/201510/11/004946t38ybzt8bq8c838y.jpg",
-            "http://img6.16fan.com/201510/11/004955d8ftz3t1sttt7ft7.jpg",
-            "http://img6.16fan.com/201510/11/005027qy2g55yyglb59zdu.jpg",
-            "http://img6.16fan.com/201510/11/005229bbtxkczcl0btmw8e.jpg",
-            // 大图：5760 * 3840
-            "http://img6.16fan.com/attachments/wenzhang/201805/18/152660818127263ge.jpeg",
-            // 长图：2280 * 22116
-            "http://img6.16fan.com/attachments/wenzhang/201805/18/152660818716180ge.jpeg"
+//            "https://s1.ax1x.com/2020/10/16/0HXKv4.jpg",
+//            // 普通jpg图片
+//            "http://img6.16fan.com/201510/11/005258wdngg6rv0tpn8z9z.jpg",
+//            "http://img6.16fan.com/201510/11/013553aj3kp9u6iuz6k9uj.jpg",
+//            "http://img6.16fan.com/201510/11/011753fnanichdca0wbhxc.jpg",
+//            "http://img6.16fan.com/201510/11/011819zbzbciir9ctn295o.jpg",
+//            "http://img6.16fan.com/201510/11/004847l7w568jc5n5wn385.jpg",
+//            "http://img6.16fan.com/201510/11/004906z0a0a0e0hs56ce0t.jpg",
+//            "http://img6.16fan.com/201510/11/004937pwttwjt0bgtoton7.jpg",
+//            "http://img6.16fan.com/201510/11/004946t38ybzt8bq8c838y.jpg",
+//            "http://img6.16fan.com/201510/11/004955d8ftz3t1sttt7ft7.jpg",
+//            "http://img6.16fan.com/201510/11/005027qy2g55yyglb59zdu.jpg",
+//            "http://img6.16fan.com/201510/11/005229bbtxkczcl0btmw8e.jpg",
+//            // 大图：5760 * 3840
+//            "http://img6.16fan.com/attachments/wenzhang/201805/18/152660818127263ge.jpeg",
+//            // 长图：2280 * 22116
+//            "http://img6.16fan.com/attachments/wenzhang/201805/18/152660818716180ge.jpeg"
     };
 
     private String[] imageList = {
@@ -345,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
                         .setLoadStrategy(loadStrategy)
 
                         // 保存的文件夹名称，会在Picture目录进行文件夹的新建。比如："BigImageView"，会在Picture目录新建BigImageView文件夹)
-                        .setFolderName("BigImageView")
+                        .setFolderName("BigImageView/abc")
 
                         // 缩放动画时长，单位ms
                         .setZoomTransitionDuration(300)
