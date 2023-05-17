@@ -256,6 +256,9 @@ public class ImagePreviewActivity extends AppCompatActivity implements Handler.C
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
+                if (imageInfoList != null && imageInfoList.size() <= position) {
+                    return;
+                }
                 super.onPageSelected(position);
                 if (ImagePreview.getInstance().getBigImagePageChangeListener() != null) {
                     ImagePreview.getInstance().getBigImagePageChangeListener().onPageSelected(position);
