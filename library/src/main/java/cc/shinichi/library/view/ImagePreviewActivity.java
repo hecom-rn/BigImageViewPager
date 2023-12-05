@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -35,6 +36,7 @@ import com.google.android.material.transition.platform.MaterialContainerTransfor
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import cc.shinichi.library.ImagePreview;
@@ -479,20 +481,79 @@ public class ImagePreviewActivity extends AppCompatActivity implements Handler.C
         }
     }
 
-    private void checkAndDownload() {
-        // 检查权限
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(ImagePreviewActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                // 拒绝权限
-                ToastUtil.getInstance()._short(context, getString(R.string.toast_deny_permission_save_failed));
+    private boolean isHarmonyOs() {
+        try {
+            Class buildExClass = Class.forName("com.huawei.system.BuildEx");
+            Object osBrand = buildExClass.getMethod("getOsBrand").invoke(buildExClass);
+            return osBrand.toString().toLowerCase().contains("harmony");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private String getHarmonyVersion() {
+        return getProp("hw_sc.build.os.version", "");
+    }
+
+    /**
+     * 获取鸿蒙系统版本号
+     * 鸿蒙2.0版本号为6
+     * 鸿蒙3.0版本号为8
+     * @return 版本号
+     */
+    private int getHarmonyVersionCode() {
+        return Integer.valueOf(getProp("hw_sc.build.os.apiversion", "0"));
+    }
+
+    private String getProp(String property, String defaultValue) {
+        try {
+            Class spClz = Class.forName("android.os.SystemProperties");
+            Method method = spClz.getDeclaredMethod("get", String.class);
+            String value = String.valueOf(method.invoke(spClz, property));
+            if (TextUtils.isEmpty(value)) {
+                return defaultValue;
             } else {
-                //申请权限
-                ActivityCompat.requestPermissions(ImagePreviewActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,}, 1);
+                return value;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return defaultValue;
+    }
+
+
+    private void checkAndDownload() {
+        if (isHarmonyOs()) {
+            int harmonyVersion = getHarmonyVersionCode();
+            Log.d("checkAndDownload", "是鸿蒙系统, harmonyVersion:$harmonyVersion");
+            if (harmonyVersion < 6) {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    String[] arr = { Manifest.permission.WRITE_EXTERNAL_STORAGE };
+                    ActivityCompat.requestPermissions(context, arr, 1);
+                } else {
+                    // 下载当前图片
+                    downloadCurrentImg();
+                }
+            } else {
+                // 下载当前图片
+                downloadCurrentImg();
             }
         } else {
-            // 下载当前图片
-            downloadCurrentImg();
+            Log.d("checkAndDownload", "不是鸿蒙系统");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    String[] arr = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                    ActivityCompat.requestPermissions(context, arr, 1);
+                } else {
+                    // 下载当前图片
+                    downloadCurrentImg();
+                }
+            } else {
+                // 下载当前图片
+                downloadCurrentImg();
+            }
         }
+
     }
 
     @Override
