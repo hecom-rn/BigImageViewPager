@@ -1,0 +1,54 @@
+//apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+
+//def getVersion() {
+//    if (SNAPSHOTS.toBoolean()) {
+//        versionName + "-SNAPSHOT"
+//    } else {
+//        versionName
+//    }
+//}
+
+def getUploadUrl() {
+    println SNAPSHOTS
+    if (SNAPSHOTS.toBoolean()) {
+        println "1"
+        MAVEN_SNAPSHOTS
+    } else {
+        println "2"
+        MAVEN_RELEASE
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            afterEvaluate { artifact(tasks.getByName("bundleReleaseAar")) }
+            groupId = PROJ_GROUP
+            artifactId = PROJ_ARTIFACTID
+            version = SNAPSHOTS.toBoolean() ? versionName + "-SNAPSHOT" : versionName
+        }
+    }
+
+    repositories {
+        maven {
+            url = getUploadUrl()
+            allowInsecureProtocol = true
+            credentials {
+                username = "admin"
+                password = "Hecom#2018"
+            }
+        }
+    }
+}
+
+//uploadArchives {
+//    repositories.mavenDeployer {
+//        pom.groupId = PROJ_GROUP
+//        pom.artifactId = PROJ_ARTIFACTID
+//        pom.version = getVersion()
+//        repository(url: getUploadUrl()) {
+//            authentication(userName: "admin", password: "Hecom#2018") // maven授权信息
+//        }
+//    }
+//}

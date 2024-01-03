@@ -8,6 +8,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import cc.shinichi.library.ImagePreview
 import cc.shinichi.library.R
+import cc.shinichi.library.bean.ImageInfo
 import cc.shinichi.library.glide.FileTarget
 import cc.shinichi.library.tool.file.FileUtil.Companion.copyFile
 import cc.shinichi.library.tool.file.FileUtil.Companion.createFileByDeleteOldFile
@@ -26,8 +27,8 @@ import java.io.*
  */
 object DownloadPictureUtil {
 
-    fun downloadPicture(context: Activity, currentItem: Int, url: String?) {
-        Glide.with(context).downloadOnly().load(url).into(object : FileTarget() {
+    fun downloadPicture(context: Activity, currentItem: Int, imageInfo: ImageInfo?) {
+        Glide.with(context).downloadOnly().load(imageInfo?.glideUrl).into(object : FileTarget() {
             override fun onLoadStarted(placeholder: Drawable?) {
                 super.onLoadStarted(placeholder)
                 if (ImagePreview.instance.downloadListener != null) {

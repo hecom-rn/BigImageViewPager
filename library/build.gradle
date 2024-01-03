@@ -7,6 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 33
+        versionCode 10
+        versionName "1.0"
     }
 
     buildTypes {
@@ -20,7 +22,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+ext {
+    versionName = android.defaultConfig.versionName
+    supportLibVersion = '29.0.0'
+}
 
+apply from: "maven.gradle"
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.4.1'

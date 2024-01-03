@@ -234,7 +234,7 @@ class ImagePreviewActivity : AppCompatActivity(), Handler.Callback, View.OnClick
      * 下载当前图片到SD卡
      */
     private fun downloadCurrentImg() {
-        downloadPicture(context, currentItem, currentItemOriginPathUrl)
+        downloadPicture(context, currentItem, imageInfoList[currentItem])
     }
 
     override fun onBackPressed() {

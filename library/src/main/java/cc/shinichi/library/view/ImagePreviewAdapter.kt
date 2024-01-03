@@ -223,7 +223,7 @@ class ImagePreviewAdapter(private val activity: AppCompatActivity, imageList: Mu
             }
         } else {
             Log.d("instantiateItem", "原图缓存不存在，开始加载 url = $url")
-            Glide.with(activity).downloadOnly().load(url).addListener(object : RequestListener<File> {
+            Glide.with(activity).downloadOnly().load(info.glideUrl).addListener(object : RequestListener<File> {
                 override fun onLoadFailed(
                     e: GlideException?, model: Any, target: Target<File>,
                     isFirstResource: Boolean
